@@ -260,12 +260,67 @@ const chatbotBrain = {
             { keywords: ["precaution", "खबरदारी", "protect"], reply: "सामान्य खबरदारी: 1. पिकांची फेरपालट. 2. पाणी साचणे टाळा. 3. मातीचे परीक्षण करा." }
         ],
         fallback: "कृपया तुमचे पीक किंवा आजाराबद्दल स्पष्टपणे विचारणा करा."
+    },
+    kn: {
+        welcome: "ನಮಸ್ಕಾರ! ನಾನು ನಿಮ್ಮ AI ಕೃಷಿ ಸಹಾಯಕ. ಬೆಳೆ ಮತ್ತು ರೋಗಗಳ ಬಗ್ಗೆ ಸಲಹೆ ಮತ್ತು ಮುನ್ನೆಚ್ಚರಿಕೆಗಾಗಿ ನನ್ನನ್ನು ಕೇಳಿ.",
+        prompts: ["ಗೋಧಿಯಲ್ಲಿ ರೋಗ?", "ಹತ್ತಿ ರಕ್ಷಣೆ ಹೇಗೆ?", "ಸಾಮಾನ್ಯ ಮುನ್ನೆಚ್ಚರಿಕೆ?"],
+        logic: [
+            { keywords: ["ಗೋಧಿ", "wheat", "rust", "ರೋಗ"], reply: "ಗೋಧಿ ಎಲೆ ತುಕ್ಕು ರೋಗಕ್ಕೆ ಮ್ಯಾಂಕೊಜೆಬ್ ಸಿಂಪಡಿಸಿ. ಮುನ್ನೆಚ್ಚರಿಕೆ: ನೀರು ನಿಲ್ಲದಂತೆ ನೋಡಿಕೊಳ್ಳಿ, ನೈಟ್ರೋಜನ್ ಕಡಿಮೆ ಬಳಸಿ." },
+            { keywords: ["ಹತ್ತಿ", "cotton", "blight", "ರಕ್ಷಣೆ"], reply: "ಹತ್ತಿಗೆ ಕಾಪರ್ ಆಕ್ಸಿಕ್ಲೋರೈಡ್ ಬಳಸಿ. ಮುನ್ನೆಚ್ಚರಿಕೆ: ಪ್ರಮಾಣೀಕೃತ ಬೀಜಗಳನ್ನು ಮಾತ್ರ ಬಳಸಿ." },
+            { keywords: ["ಭತ್ತ", "rice", "blast"], reply: "ಭತ್ತದ ಬ್ಲಾಸ್ಟ್‌ಗೆ ಟ್ರೈಸಿಕ್ಲಜೋಲ್ ಸಿಂಪಡಿಸಿ. ಮುನ್ನೆಚ್ಚರಿಕೆ: 2-5 ಸೆಂ.ಮೀ ನೀರು ಹೊಲದಲ್ಲಿ ಇರಿಸಿ." },
+            { keywords: ["ಬೆಳೆ", "crop", "ಬೆಳೆಯಲು"], reply: "ಸರಿಯಾದ ಬೆಳೆ ಆಯ್ಕೆಗಾಗಿ 'Crop Recommendation' ಟ್ಯಾಬ್ ನೋಡಿ. ಮುನ್ನೆಚ್ಚರಿಕೆ: ಪ್ರತಿ ಋತುವಿನಲ್ಲಿ ಬೆಳೆ ಪರ್ಯಾಯ ಮಾಡಿ." },
+            { keywords: ["precaution", "ಮುನ್ನೆಚ್ಚರಿಕೆ", "ರಕ್ಷಿಸು"], reply: "ಸಾಮಾನ್ಯ ಮುನ್ನೆಚ್ಚರಿಕೆ: 1. ಬೆಳೆ ಪರ್ಯಾಯ ಮಾಡಿ. 2. ನೀರು ನಿಲ್ಲದಂತೆ ನೋಡಿ. 3. ಮಣ್ಣು ಪರೀಕ್ಷಿಸಿ." }
+        ],
+        fallback: "ದಯವಿಟ್ಟು ನೀವು ಬೆಳೆಯುವ ಬೆಳೆ ಅಥವಾ ರೋಗವನ್ನು ಸ್ಪಷ್ಟವಾಗಿ ಕೇಳಿ."
     }
 };
 
+// Voice Input - Auto detects language from selected chatbot language
+function startVoiceInput() {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        alert('Voice input is not supported in this browser. Please use Chrome.');
+        return;
+    }
+    
+    const langKey = currentLang.split('-')[0];
+    const recognitionLang = bcp47Map[langKey] || 'en-IN';
+    
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = recognitionLang;       // Auto-detect input language based on current language selection
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    
+    const micBtn = document.getElementById('mic-btn');
+    micBtn.textContent = '🔴';
+    micBtn.title = 'Listening...';
+    
+    recognition.onresult = function(event) {
+        const spokenText = event.results[0][0].transcript;
+        document.getElementById('chat-input').value = spokenText;
+        micBtn.textContent = '🎤';
+        micBtn.title = 'Voice Input';
+        // Auto-submit the form with detected voice input
+        document.getElementById('chat-form').dispatchEvent(new Event('submit'));
+    };
+    
+    recognition.onerror = function(event) {
+        micBtn.textContent = '🎤';
+        if (event.error === 'no-speech') micBtn.title = 'No speech detected. Try again.';
+        else micBtn.title = 'Voice input error: ' + event.error;
+    };
+    
+    recognition.onend = function() {
+        micBtn.textContent = '🎤';
+        micBtn.title = 'Voice Input';
+    };
+    
+    recognition.start();
+}
+
 let currentLang = 'en';
 
-const bcp47Map = { 'en': 'en-IN', 'hi': 'hi-IN', 'te': 'te-IN', 'ta': 'ta-IN', 'mr': 'mr-IN' };
+const bcp47Map = { 'en': 'en-IN', 'hi': 'hi-IN', 'te': 'te-IN', 'ta': 'ta-IN', 'mr': 'mr-IN', 'kn': 'kn-IN' };
 
 function setChatbotLanguage(lang) {
     currentLang = lang;
@@ -303,7 +358,8 @@ const ttsUI = {
     'hi': { play: '▶️ चलाएं', pause: '⏸️ रोकें', resume: '⏯️ फिर से शुरू' },
     'te': { play: '▶️ ప్లే', pause: '⏸️ పాజ్', resume: '⏯️ పునః' },
     'ta': { play: '▶️ ப்ளே', pause: '⏸️ இடைநிறுத்து', resume: '⏯️ மீண்டும் தொடங்கு' },
-    'mr': { play: '▶️ प्ले करा', pause: '⏸️ थांबवा', resume: '⏯️ पुन्हा सुरू' }
+    'mr': { play: '▶️ प्ले करा', pause: '⏸️ थांबवा', resume: '⏯️ पुन्हा सुरू' },
+    'kn': { play: '▶️ ಪ್ಲೇ', pause: '⏸️ ವಿರಾಮ', resume: '⏯️ ಮತ್ತೆ ಪ್ರಾರಂಭಿಸಿ' }
 };
 
 // Highly reliable free Google Translate API wrapper for robust local execution

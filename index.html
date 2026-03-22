@@ -138,6 +138,7 @@
                                 <option value="te-IN">Telugu (తెలుగు)</option>
                                 <option value="ta-IN">Tamil (தமிழ்)</option>
                                 <option value="mr-IN">Marathi (मराठी)</option>
+                                <option value="kn-IN">Kannada (ಕನ್ನಡ)</option>
                             </select>
                         </div>
                     </div>
@@ -177,7 +178,7 @@
         <section id="chatbot" class="tab-content hidden-tab">
             <div class="section-header">
                 <h2>Farmers AI Multi-lingual Chatbot</h2>
-                <p>Interact with the AI assistant in 5 different languages. Designed explicitly for rural empowerment.</p>
+                <p>Interact with the AI assistant in 6 different languages. Tap 🎤 to speak — the AI auto-detects your language.</p>
             </div>
 
             <div class="chat-container glass-panel">
@@ -189,6 +190,7 @@
                         <button class="lang-btn" data-lang="te">Telugu (తెలుగు)</button>
                         <button class="lang-btn" data-lang="ta">Tamil (தமிழ்)</button>
                         <button class="lang-btn" data-lang="mr">Marathi (मराठी)</button>
+                        <button class="lang-btn" data-lang="kn">Kannada (ಕನ್ನಡ)</button>
                     </div>
                 </div>
                 
@@ -206,7 +208,8 @@
                             <!-- Populated dynamically via JS -->
                         </div>
                         <form id="chat-form" class="chat-form">
-                            <input type="text" id="chat-input" placeholder="Type your farming question here..." required autocomplete="off">
+                            <button type="button" id="mic-btn" class="send-btn" title="Voice Input (Auto-detects Language)" style="background: rgba(255,255,255,0.1); margin-right: 4px;" onclick="startVoiceInput()">🎤</button>
+                            <input type="text" id="chat-input" placeholder="Type or speak your farming question..." required autocomplete="off">
                             <button type="submit" class="send-btn">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
