@@ -277,8 +277,8 @@ function setChatbotLanguage(lang) {
     const msgContainer = document.getElementById('chat-messages');
     msgContainer.innerHTML = '';
     
-    // Auto speak the welcome message upon changing language
-    addMessage(chatbotBrain[langKey].welcome, true, true);
+    // Insert the welcome message cleanly without auto-playing the intro speech
+    addMessage(chatbotBrain[langKey].welcome, true, false);
     
     const promptContainer = document.getElementById('quick-prompts');
     promptContainer.innerHTML = '';
