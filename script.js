@@ -162,9 +162,7 @@ function speakText(text, lang) {
     }
 }
 
-document.getElementById('speak-btn-replay').addEventListener('click', () => {
-    if (lastDetectedSpokenText) speakText(lastDetectedSpokenText, lastDetectedLang);
-});
+// Removed orphan speak-btn-replay listener
 
 document.getElementById('disease-form').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -194,12 +192,9 @@ document.getElementById('disease-form').addEventListener('submit', function(e) {
         document.getElementById('predicted-medicine').innerText = `Issue: ${detection.disease}`;
         document.getElementById('medicine-description').innerText = `Regimen: ${detection.medicine}. Apply early morning before heat peaks.`;
         
-        // Detailed advice generation
+        // Render translation text to visually display without auto-playing voice
         const spokenText = translations[lang](cropInput, detection.disease, detection.medicine);
-        lastDetectedSpokenText = spokenText;
-        lastDetectedLang = lang;
-        
-        speakText(spokenText, lang);
+        document.getElementById('medicine-description').innerText += `\n\n${spokenText}`;
         
     }, 2500);
 });
